@@ -1,0 +1,118 @@
+# ==== 2025 ULTRA-ADVANCED DEPENDENCIES ====
+# Core dependencies for maximum performance and modern AI pipelines
+
+# ===== FastAPI & Web Framework =====
+fastapi>=0.109.0          # Modern async web framework
+uvicorn[standard]>=0.27.0 # ASGI server with HTTP/2, WebSockets
+python-multipart>=0.0.6   # File upload support
+pydantic>=2.5.0           # Data validation and settings
+pydantic-settings>=2.1.0  # Settings management
+
+# ===== HIGH-PRIORITY: Ultra-Fast Data Processing =====
+polars>=0.20.0            # 🚀 10-100x faster than pandas! Rust-powered DataFrame library
+rich>=13.7.0              # 🎨 Beautiful terminal formatting, progress bars, tables
+numpy>=1.26.0             # Numerical operations and array processing (latest)
+
+# Optional but HIGHLY recommended for maximum speed
+# duckdb>=0.10.0          # 🦆 In-process SQL analytics (ultra-fast CSV queries)
+# pyarrow>=15.0.0         # Arrow format support for Polars (2x speed boost)
+
+# ===== Text Processing & NLP =====
+spacy>=3.7.0              # Fast NLP processing with Cython optimization
+flashtext>=2.7            # Ultra-fast keyword search and replace
+pandas>=2.2.0             # Vectorized text operations (optional fallback)
+
+# ===== Performance Optimization =====
+numba>=0.59.0             # JIT compilation for numerical operations
+cython>=3.0.0             # C extensions for speed
+
+# ===== Async and I/O =====
+aiofiles>=23.2.0          # Async file operations for concurrent I/O
+websockets>=12.0          # WebSocket support for real-time updates
+
+# ===== Memory and Caching =====
+redis>=5.0.1              # Redis client for caching and session management
+diskcache>=5.6.0          # Persistent caching (optional)
+joblib>=1.4.0             # Memory-efficient caching and parallel processing
+
+# ===== API Rate Limiting & Security =====
+slowapi>=0.1.9            # Rate limiting for FastAPI
+python-jose[cryptography]>=3.3.0  # JWT token handling
+passlib[bcrypt]>=1.7.4    # Password hashing
+
+# ===== Text Processing Utilities =====
+unicodedata               # Built-in Unicode normalization
+regex>=2024.0.0           # Advanced regex with better performance than re
+ftfy>=6.2.0               # Fix text encoding issues
+
+# ===== Monitoring & Metrics =====
+prometheus-client>=0.19.0 # Prometheus metrics for monitoring
+python-json-logger>=2.0.7 # JSON logging for production
+
+# ===== Development and Testing =====
+pytest>=8.0.0             # Testing framework (latest)
+pytest-asyncio>=0.23.0    # Async test support
+pytest-benchmark>=4.0.0   # Performance benchmarking
+memory-profiler>=0.61.0   # Memory usage profiling
+httpx>=0.27.0             # HTTP client for testing
+
+# Optional: Language models for spaCy
+# Install with: python -m spacy download en_core_web_sm
+# en_core_web_sm>=3.4.0
+
+# Optional: GPU acceleration (if available)
+# cupy>=10.0.0            # GPU-accelerated NumPy
+# spacy[cuda]>=3.4.0      # GPU-accelerated spaCy
+
+# ==== Advanced Tool Invocation Dependencies ====
+# Modern LangChain and LangGraph (2025)
+langchain>=0.3.0
+langchain-core>=0.3.0
+langchain-openai>=0.2.0
+langgraph>=0.2.0
+langchain-community>=0.3.0
+
+# Pydantic for data validation and configuration management
+pydantic>=2.9.0
+pydantic-settings>=2.5.0      # Environment-based settings management
+
+# Configuration management and hot-reloading
+python-dotenv>=1.0.0          # Environment variable loading from .env
+watchdog>=5.0.0               # File system monitoring for hot-reload (optional)
+
+# ===== QUICK START INSTALLATION =====
+# For optimal performance, install in this order:
+# 
+# 1. Essential (minimal working setup):
+#    pip install numpy rich
+#
+# 2. High Performance (recommended):
+#    pip install polars numpy rich aiofiles
+#
+# 3. Maximum Performance (all features):
+#    pip install -r requirements.txt
+#
+# 4. Optional GPU acceleration:
+#    pip install cupy-cuda12x  # For CUDA 12.x
+#
+# ===== PERFORMANCE NOTES =====
+# - Polars: 10-100x faster CSV reading than pandas
+# - Rich: Beautiful progress bars with minimal overhead
+# - aiofiles: Async I/O for concurrent file operations
+# - Numba: JIT compilation for compute-heavy operations
+# - DuckDB: SQL analytics on CSV files without loading to memory
+
+# YAML parsing for MCP config
+PyYAML>=6.0.0
+
+# HTTP client with connection pooling
+httpx>=0.27.0
+aiohttp>=3.9.0
+mcp-server-calculator
+mcpgex
+sentence_transformers
+fastapi
+uvicorn
+pydantic
+aiofiles
+python-multipart

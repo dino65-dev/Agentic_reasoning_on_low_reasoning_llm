@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agentic Reasoning API - Test Frontend</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input[type="text"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-input {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .option-input input {
+            flex: 1;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .add-option-btn {
+            background: #4caf50;
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        .remove-option-btn {
+            background: #f44336;
+            padding: 8px 16px;
+            font-size: 14px;
+            min-width: 40px;
+        }
+
+        .result {
+            background: #f5f5f5;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .result.show {
+            display: block;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .result-item {
+            margin-bottom: 10px;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+        }
+
+        .result-label {
+            font-weight: bold;
+            color: #333;
+            margin-right: 10px;
+        }
+
+        .result-value {
+            color: #666;
+        }
+
+        .correct-answer {
+            background: #4caf50;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            font-weight: bold;
+        }
+
+        .loading {
+            text-align: center;
+            color: #667eea;
+            font-size: 18px;
+            padding: 20px;
+            display: none;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .file-upload {
+            border: 2px dashed #667eea;
+            padding: 30px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .file-upload:hover {
+            background: #f5f5f5;
+        }
+
+        .file-upload input[type="file"] {
+            display: none;
+        }
+
+        .progress-container {
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            height: 30px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .progress-container.show {
+            display: block;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .error {
+            background: #ffebee;
+            border-left: 4px solid #f44336;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            color: #c62828;
+            display: none;
+        }
+
+        .error.show {
+            display: block;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background: #e0e0e0;
+            border: none;
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .tab.active {
+            background: white;
+            color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .api-status {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #f44336;
+            margin-right: 10px;
+        }
+
+        .status-indicator.connected {
+            background: #4caf50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Agentic Reasoning API Tester</h1>
+
+        <!-- API Status -->
+        <div class="api-status">
+            <div style="display: flex; align-items: center;">
+                <div class="status-indicator" id="statusIndicator"></div>
+                <span id="statusText">Checking API...</span>
+            </div>
+            <button onclick="checkHealth()" style="padding: 8px 16px;">Refresh Status</button>
+        </div>
+
+        <!-- Tabs -->
+        <div class="card">
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('single')">Single Problem</button>
+                <button class="tab" onclick="switchTab('csv')">CSV Upload</button>
+            </div>
+
+            <!-- Single Problem Tab -->
+            <div id="single-tab" class="tab-content active">
+                <h2>Process Single Problem</h2>
+                
+                <div class="form-group">
+                    <label for="problemStatement">Problem Statement:</label>
+                    <textarea id="problemStatement" placeholder="Enter your problem here...">What is 15 + 27?</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Answer Options:</label>
+                    <div class="options-container" id="optionsContainer">
+                        <div class="option-input">
+                            <input type="text" class="option" placeholder="Option 1" value="40">
+                            <button class="remove-option-btn" onclick="removeOption(this)">×</button>
+                        </div>
+                        <div class="option-input">
+                            <input type="text" class="option" placeholder="Option 2" value="42">
+                            <button class="remove-option-btn" onclick="removeOption(this)">×</button>
+                        </div>
+                        <div class="option-input">
+                            <input type="text" class="option" placeholder="Option 3" value="44">
+                            <button class="remove-option-btn" onclick="removeOption(this)">×</button>
+                        </div>
+                    </div>
+                    <button class="add-option-btn" onclick="addOption()" style="margin-top: 10px;">+ Add Option</button>
+                </div>
+
+                <div class="form-group">
+                    <label for="topic">Topic (Optional):</label>
+                    <input type="text" id="topic" placeholder="e.g., Math, Science" value="Math">
+                </div>
+
+                <button onclick="solveSingleProblem()">Solve Problem</button>
+
+                <div class="loading" id="singleLoading">
+                    <div class="spinner"></div>
+                    Processing...
+                </div>
+
+                <div class="error" id="singleError"></div>
+
+                <div class="result" id="singleResult">
+                    <h3>Result:</h3>
+                    <div id="singleResultContent"></div>
+                </div>
+            </div>
+
+            <!-- CSV Upload Tab -->
+            <div id="csv-tab" class="tab-content">
+                <h2>Upload CSV for Batch Processing</h2>
+                
+                <div class="file-upload" onclick="document.getElementById('csvFile').click()">
+                    <input type="file" id="csvFile" accept=".csv" onchange="handleFileSelect(this)">
+                    <p style="color: #667eea; font-size: 18px; margin-bottom: 10px;">📁 Click to upload CSV</p>
+                    <p style="color: #999; font-size: 14px;">or drag and drop here</p>
+                    <p id="fileName" style="margin-top: 10px; color: #333; font-weight: bold;"></p>
+                </div>
+
+                <div class="form-group" style="margin-top: 20px;">
+                    <label for="processingMode">Processing Mode:</label>
+                    <select id="processingMode">
+                        <option value="sync">Synchronous (wait for results)</option>
+                        <option value="async">Asynchronous (with WebSocket updates)</option>
+                    </select>
+                </div>
+
+                <button onclick="uploadCSV()" id="uploadBtn" disabled>Upload and Process</button>
+
+                <div class="loading" id="csvLoading">
+                    <div class="spinner"></div>
+                    <span id="loadingText">Processing...</span>
+                </div>
+
+                <div class="progress-container" id="progressContainer">
+                    <div class="progress-bar" id="progressBar">0%</div>
+                </div>
+
+                <div class="error" id="csvError"></div>
+
+                <div class="result" id="csvResult">
+                    <h3>Results:</h3>
+                    <div id="csvResultContent"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8080';
+        let websocket = null;
+
+        // Check API health on load
+        checkHealth();
+
+        async function checkHealth() {
+            const indicator = document.getElementById('statusIndicator');
+            const statusText = document.getElementById('statusText');
+            
+            try {
+                const response = await fetch(`${API_BASE}/health`);
+                const data = await response.json();
+                
+                if (data.status === 'healthy') {
+                    indicator.classList.add('connected');
+                    statusText.textContent = `API Connected (v${data.version}) - Redis: ${data.redis_connected ? 'Connected' : 'Disconnected'}`;
+                } else {
+                    indicator.classList.remove('connected');
+                    statusText.textContent = 'API Unhealthy';
+                }
+            } catch (error) {
+                indicator.classList.remove('connected');
+                statusText.textContent = 'API Disconnected - Make sure server is running!';
+            }
+        }
+
+        function switchTab(tab) {
+            // Update tabs
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(`${tab}-tab`).classList.add('active');
+        }
+
+        function addOption() {
+            const container = document.getElementById('optionsContainer');
+            const optionCount = container.children.length + 1;
+            
+            const div = document.createElement('div');
+            div.className = 'option-input';
+            div.innerHTML = `
+                <input type="text" class="option" placeholder="Option ${optionCount}">
+                <button class="remove-option-btn" onclick="removeOption(this)">×</button>
+            `;
+            container.appendChild(div);
+        }
+
+        function removeOption(btn) {
+            const container = document.getElementById('optionsContainer');
+            if (container.children.length > 2) {
+                btn.parentElement.remove();
+            } else {
+                alert('You must have at least 2 options!');
+            }
+        }
+
+        async function solveSingleProblem() {
+            const problem = document.getElementById('problemStatement').value;
+            const topic = document.getElementById('topic').value;
+            const options = Array.from(document.querySelectorAll('.option'))
+                .map(input => input.value)
+                .filter(val => val.trim() !== '');
+
+            // Validation
+            if (!problem.trim()) {
+                showError('singleError', 'Please enter a problem statement');
+                return;
+            }
+
+            if (options.length < 2) {
+                showError('singleError', 'Please enter at least 2 answer options');
+                return;
+            }
+
+            // Show loading
+            document.getElementById('singleLoading').classList.add('show');
+            document.getElementById('singleResult').classList.remove('show');
+            document.getElementById('singleError').classList.remove('show');
+
+            try {
+                const response = await fetch(`${API_BASE}/run-single/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        problem_statement: problem,
+                        answer_options: options,
+                        topic: topic || null
+                    })
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Request failed');
+                }
+
+                const result = await response.json();
+                displaySingleResult(result);
+            } catch (error) {
+                showError('singleError', error.message);
+            } finally {
+                document.getElementById('singleLoading').classList.remove('show');
+            }
+        }
+
+        function displaySingleResult(result) {
+            const content = document.getElementById('singleResultContent');
+            content.innerHTML = `
+                <div class="result-item">
+                    <span class="result-label">Problem:</span>
+                    <span class="result-value">${result.problem_statement}</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Correct Answer:</span>
+                    <span class="correct-answer">${result.correct_option}</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Solution:</span>
+                    <div class="result-value" style="margin-top: 10px; white-space: pre-wrap;">${result.solution}</div>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Processing Time:</span>
+                    <span class="result-value">${result.processing_time.toFixed(2)}s</span>
+                </div>
+                ${result.topic ? `
+                <div class="result-item">
+                    <span class="result-label">Topic:</span>
+                    <span class="result-value">${result.topic}</span>
+                </div>
+                ` : ''}
+            `;
+            document.getElementById('singleResult').classList.add('show');
+        }
+
+        function handleFileSelect(input) {
+            const file = input.files[0];
+            if (file) {
+                document.getElementById('fileName').textContent = `Selected: ${file.name}`;
+                document.getElementById('uploadBtn').disabled = false;
+            }
+        }
+
+        async function uploadCSV() {
+            const fileInput = document.getElementById('csvFile');
+            const file = fileInput.files[0];
+            const mode = document.getElementById('processingMode').value;
+
+            if (!file) {
+                showError('csvError', 'Please select a CSV file');
+                return;
+            }
+
+            // Show loading
+            document.getElementById('csvLoading').classList.add('show');
+            document.getElementById('csvResult').classList.remove('show');
+            document.getElementById('csvError').classList.remove('show');
+            document.getElementById('progressContainer').classList.remove('show');
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                if (mode === 'sync') {
+                    await uploadCSVSync(formData);
+                } else {
+                    await uploadCSVAsync(formData);
+                }
+            } catch (error) {
+                showError('csvError', error.message);
+            } finally {
+                if (mode === 'sync') {
+                    document.getElementById('csvLoading').classList.remove('show');
+                }
+            }
+        }
+
+        async function uploadCSVSync(formData) {
+            const response = await fetch(`${API_BASE}/run-csv/`, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || 'Upload failed');
+            }
+
+            const result = await response.json();
+            displayCSVResult(result);
+        }
+
+        async function uploadCSVAsync(formData) {
+            const response = await fetch(`${API_BASE}/batch-async/`, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || 'Upload failed');
+            }
+
+            const { job_id } = await response.json();
+            
+            // Show progress bar
+            document.getElementById('progressContainer').classList.add('show');
+            document.getElementById('loadingText').textContent = 'Connecting to WebSocket...';
+
+            // Connect WebSocket
+            connectWebSocket(job_id);
+        }
+
+        function connectWebSocket(jobId) {
+            const wsUrl = `ws://localhost:8080/ws/${jobId}`;
+            websocket = new WebSocket(wsUrl);
+
+            websocket.onopen = () => {
+                console.log('WebSocket connected');
+                document.getElementById('loadingText').textContent = 'Processing...';
+            };
+
+            websocket.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                console.log('WebSocket message:', data);
+
+                if (data.type === 'heartbeat') {
+                    return;
+                }
+
+                // Update progress
+                if (data.progress !== undefined) {
+                    const progressBar = document.getElementById('progressBar');
+                    progressBar.style.width = `${data.progress}%`;
+                    progressBar.textContent = `${Math.round(data.progress)}%`;
+                }
+
+                // Check if completed
+                if (data.status === 'completed') {
+                    document.getElementById('csvLoading').classList.remove('show');
+                    displayCSVResult(data.result);
+                    websocket.close();
+                } else if (data.status === 'failed') {
+                    document.getElementById('csvLoading').classList.remove('show');
+                    showError('csvError', data.error || 'Processing failed');
+                    websocket.close();
+                }
+            };
+
+            websocket.onerror = (error) => {
+                console.error('WebSocket error:', error);
+                document.getElementById('csvLoading').classList.remove('show');
+                showError('csvError', 'WebSocket connection failed');
+            };
+
+            websocket.onclose = () => {
+                console.log('WebSocket closed');
+            };
+        }
+
+        function displayCSVResult(result) {
+            const content = document.getElementById('csvResultContent');
+            const downloadLink = result.download_csv;
+            
+            let html = `
+                <div class="result-item">
+                    <span class="result-label">Total Problems:</span>
+                    <span class="result-value">${result.total_problems}</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Download:</span>
+                    <a href="${API_BASE}${downloadLink}" download style="color: #667eea; font-weight: bold;">
+                        Download Results CSV
+                    </a>
+                </div>
+            `;
+
+            if (result.results && result.results.length > 0) {
+                html += `<div class="result-item">
+                    <span class="result-label">Preview (first 3 results):</span>
+                    <div style="margin-top: 10px;">`;
+                
+                result.results.slice(0, 3).forEach((r, i) => {
+                    html += `
+                        <div style="background: white; padding: 10px; margin-bottom: 10px; border-radius: 5px; border-left: 3px solid #667eea;">
+                            <strong>Problem ${i + 1}:</strong> ${r.problem_statement}<br>
+                            <strong>Answer:</strong> <span class="correct-answer" style="font-size: 12px;">${r.correct_option}</span>
+                        </div>
+                    `;
+                });
+                
+                html += `</div></div>`;
+            }
+
+            content.innerHTML = html;
+            document.getElementById('csvResult').classList.add('show');
+        }
+
+        function showError(elementId, message) {
+            const errorDiv = document.getElementById(elementId);
+            errorDiv.textContent = `Error: ${message}`;
+            errorDiv.classList.add('show');
+        }
+
+        // Auto-check health every 30 seconds
+        setInterval(checkHealth, 30000);
+    </script>
+</body>
+</html>
