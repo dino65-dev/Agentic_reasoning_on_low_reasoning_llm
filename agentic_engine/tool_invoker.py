@@ -6,11 +6,16 @@ import asyncio
 import yaml
 import json
 import re
+import os
 from typing import TypedDict, Annotated, Sequence, Dict, Any, List, Optional, Callable
 from functools import lru_cache, wraps
 from dataclasses import dataclass, field
 from concurrent.futures import ThreadPoolExecutor
 import time
+
+# Load environment variables
+from dotenv import load_dotenv
+load_dotenv()
 
 # Modern LangChain imports (0.3+ compatible)
 from langchain_openai import ChatOpenAI
@@ -27,8 +32,13 @@ from langgraph.checkpoint.memory import MemorySaver
 
 from pydantic import SecretStr, BaseModel, Field
 
-# ==== Configuration ====
-API_KEY = SecretStr("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")
+# ==== Configuration from Environment ====
+LLM_API_URL = os.getenv("SMALL_LLM_API_URL", "http://localhost:1234/v1")
+LLM_API_KEY = os.getenv("SMALL_LLM_API_KEY", "lm-studio")
+LLM_MODEL_NAME = os.getenv("LLM__MODEL_NAME", "qwen2-1.5b-instruct")
+
+# Fallback API key for backward compatibility
+API_KEY = SecretStr(LLM_API_KEY)
 MAX_RETRIES = 3
 CACHE_SIZE = 1000
 PARALLEL_LIMIT = 10
@@ -505,7 +515,7 @@ Please validate and provide the final answer.""")
 async def run_advanced_mcp_pipeline_async(
     problem_statement: str, 
     mcp_config_path: str, 
-    openai_api_key: SecretStr
+    openai_api_key: Optional[SecretStr] = None
 ) -> Dict[str, Any]:
     """
     Async version of the advanced pipeline with full optimization:
@@ -513,18 +523,22 @@ async def run_advanced_mcp_pipeline_async(
     - Caching
     - Error recovery
     - Checkpointing
+    - Supports local LM Studio models
     """
     # Load tools with caching
     tools = load_mcp_tools_from_registry(mcp_config_path)
     
-    # Initialize LLM with optimal settings
+    # Use environment variable or passed key
+    api_key = openai_api_key if openai_api_key else SecretStr(LLM_API_KEY)
+    
+    # Initialize LLM with optimal settings (supports local LM Studio)
     llm = ChatOpenAI(
-        base_url="https://openrouter.ai/api/v1",
-        model="nvidia/nemotron-nano-9b-v2:free",
-        api_key=openai_api_key,
+        base_url=LLM_API_URL,
+        model=LLM_MODEL_NAME,
+        api_key=api_key,
         temperature=0.7,
-        timeout=30.0,
-        max_retries=3
+        timeout=60.0,  # Increased for local models
+        max_retries=MAX_RETRIES
     )
     
     # Build graph
