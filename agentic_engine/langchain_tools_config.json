@@ -1,0 +1,15 @@
+{
+  "tools": [
+    "calculator",
+    "text_analyzer",
+    "knowledge_search",
+    "statistics",
+    "datetime"
+  ],
+  "settings": {
+    "cache_ttl": 60,
+    "max_parallel": 10,
+    "max_retries": 3
+  },
+  "description": "LangChain native tools configuration - no MCP dependencies"
+}
