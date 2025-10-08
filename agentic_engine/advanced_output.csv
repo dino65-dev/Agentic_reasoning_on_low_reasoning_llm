@@ -1,4 +1,0 @@
-﻿topic,problem_statement,solution,correct option,answer_choices (for audit only)
-Logic Puzzles,Bob has three hats. Which is red?,Step 1: Bob lists the hats. Step 2: Checks which is red. Step 3: Concludes C is red. ✓ Confidence: HIGH,C,A: Hat A || B: Hat B || C: Hat C
-Math Reasoning,"If x+3=7, what is x?",Step 1: Subtract 3 from both sides. Step 2: x = 4. Final answer: B. ✓ Confidence: HIGH,B,A: 3 || B: 4 || C: 5
-Critical Thinking,Which statement demonstrates valid logical reasoning?,Step 1: Analyze each option. Step 2: Eliminate fallacies. Step 3: Select option A. ✓ Confidence: MEDIUM,A,A: Valid reasoning || B: Ad hominem fallacy || C: Circular logic
